@@ -126,5 +126,5 @@ if __name__ == '__main__' :
         batch_size = 4,
         embedding_size = 64,
         hidden_units = 64,
-        use_dropout = True
+        use_dropout = False
     )

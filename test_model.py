@@ -81,7 +81,7 @@ def test(model_path = "emotion_model.h5"):
         #print("true:", y_test[i])
     
     
-    '''
+    
     while True:
         sentence = input(">>")
         if sentence == "quit":
@@ -98,10 +98,28 @@ def test(model_path = "emotion_model.h5"):
         seqs.append(seq)
         seqs = sequence.pad_sequences(seqs, maxlen=max_len)
 
-        print(seqs[0])
-        print (model.predict(seqs))
-        print (model.predict_classes(seqs))
-    '''
+        #print(seqs[0])
+        #print (model.predict(seqs))
+        #print (model.predict_classes(seqs))
+        predict_result = model.predict(seqs)
+        #print(predict_result)
+        predict_result = np.split(predict_result[0], [5,8])
+        sen_type_pre = predict_result[0]
+        sen_emotion_pre = predict_result[1]
+        sen_pos_pre = predict_result[2]
+        pos1, pos2 = find_two_max(sen_type_pre)
+        print("認知偏誤類型:")
+        print("\t預測：", lable_type[pos1], sen_type_pre[pos1])
+        print("\t預測：", lable_type[pos2], sen_type_pre[pos2])
+        print("\n情緒類型:")
+        pos1, pos2 = find_two_max(sen_emotion_pre)
+        print("\t預測：", lable_emotion[pos1], sen_emotion_pre[pos1])
+        print("\t預測：", lable_emotion[pos2], sen_emotion_pre[pos2])
+        print("\n是否為治療性對話:")
+        if sen_pos_pre[0] > 0.5:
+            print("\t預測：是", sen_pos_pre[0])
+        else:
+            print("\t預測：否", sen_pos_pre[0])
 
 if __name__ == "__main__":
     test()
