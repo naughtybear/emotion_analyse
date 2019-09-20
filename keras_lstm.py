@@ -10,6 +10,7 @@ from keras.preprocessing import sequence
 import collections
 import random
 import pickle
+from f1score import f1
 
 np.set_printoptions(threshold=np.inf)
 
@@ -31,11 +32,14 @@ def model_init(max_len, embedding_size, hidden_units, use_dropout,
     if use_dropout:
         model.add(Dropout(dropout_rate))
 
-    model.add(Dense(9))
+    #model.add(Dense(9))
+    #model.add(Activation("sigmod"))
+    #model.compile(optimizer = "adam", loss = "binary_crossentropy", metrics=[f1])
+    model.add(Dense(28))
+    
+    model.add(Activation("softmax"))
 
-    model.add(Activation("sigmoid"))
-
-    model.compile(optimizer = "adam", loss = "binary_crossentropy", metrics=["accuracy"])
+    model.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics=['accuracy'])
     model.summary()
     return model
 
@@ -48,13 +52,15 @@ def rnn_network(epochs, batch_size, embedding_size, hidden_units, use_dropout):
     x_train = dataset["x_train"]
     y_train = dataset["y_train"]
     x_test = dataset["x_test"]
-    y_test = dataset["y_test"]
+    y_test = dataset["y_test_trans"]
     max_len = dataset["maxlen"]
     word_index = dataset["word_idx"]
+    #print(x_test)
 
     print ('\nData Loaded. Compiling...\n')
 
     model = model_init(max_len, embedding_size, hidden_units, use_dropout)
+    #metrics = Metrics('./best_model.h5')
     model.fit(
         x_train, y_train,
         batch_size=batch_size, epochs= epochs,
@@ -67,64 +73,12 @@ def rnn_network(epochs, batch_size, embedding_size, hidden_units, use_dropout):
     model.save('emotion_model.h5') # save model
     print("model save success")
 
-    '''
-    test_result = []
-    for i in range(28):
-        for j in range(6):
-            if y_test[i][j] == 1:
-                test_result.append(j)
-                break
-    
-    print(np.asarray(test_result))
-    print(model.predict_classes(x_test))
-    
-    for i in range(15):
-        tmp = []
-        tmp.append(x_test[i])
-        #print(tmp)
-        tmp = np.array(tmp)
-        print(tmp)
-        print(i)
-        print("predict:", model.predict_classes(x_test[i]))
-        print("true:", y_test[i])
-    
-    while True:
-        sentence = input(">>")
-        if sentence == "quit":
-            exit(0)
-        seq = []
-        seqs = []
-        seq.append(word_index['GO'])
-        for word in sentence:
-            if word in word_index:
-                seq.append(word_index[word])
-            else:
-                seq.append(word_index["UNK"])
-        seq.append(word_index["EOS"])
-        seqs.append(seq)
-        seqs = sequence.pad_sequences(seqs, maxlen=max_len)
-
-        print(seqs[0])
-        print (model.predict(seqs))
-        print (model.predict_classes(seqs))
-    '''
-
 if __name__ == '__main__' :
-    '''
-    DATA_PATH = "./data.pkl"
-    dataset = pickle.load(open(DATA_PATH, "rb"))
-    x_train = dataset["x_train"]
-    y_train = dataset["y_train"]
-    x_test = dataset["x_test"]
-    y_test = dataset["y_test"]
-    max_len = dataset["maxlen"]
-    word_index = dataset["word_idx"]
-    print(type(x_test))
-    '''
     rnn_network(
-        epochs = 30,
-        batch_size = 4,
+        epochs = 20,
+        batch_size = 8,
         embedding_size = 64,
         hidden_units = 64,
-        use_dropout = False
+        use_dropout = True
     )
+
