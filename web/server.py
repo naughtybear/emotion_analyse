@@ -3,7 +3,7 @@ import socket
 from to_model import Communicate
 
 #==== Create to_python communication ====
-to_python = Communicate('python ./test_model.py')
+to_python = Communicate('python ../test_model.py')
 subprocess = to_python.create_subprocess()
 
 if subprocess is not None:
