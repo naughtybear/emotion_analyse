@@ -1,10 +1,10 @@
 var express = require('express')
 var app = express()
 const spawn = require('child_process').spawn;
-const model = spawn('/home/naughtybear/anaconda3/envs/py36/bin/python', ['test_model.py'])
+const model = spawn('python路徑', ['test_model.py'])
 in_num = 1
 
-app.use('/view', express.static('view'))
+app.use('../view', express.static('view'))
 
 app.get('/', (req, res)=>{
     res.sendFile(__dirname + '/index.html')
