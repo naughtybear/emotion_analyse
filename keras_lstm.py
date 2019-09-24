@@ -14,8 +14,16 @@ from f1score import f1
 
 np.set_printoptions(threshold=np.inf)
 
-def model_init(max_len, embedding_size, hidden_units, use_dropout, 
+def model_init(max_len, embedding_size, hidden_units, use_dropout = False, 
                 dropout_rate = 0.1):
+    '''
+    input:
+        max_len: 句子最大長度
+        embedding_size: 做word embeddding的word vector維度
+        hidden_units: hidden units個數
+        use_dropout: 是否要使用dropout
+        dropout_rate: dropout多少比例的數據
+    '''
     vocab_size = 10000
 
     model = Sequential()
@@ -39,7 +47,7 @@ def model_init(max_len, embedding_size, hidden_units, use_dropout,
     
     model.add(Activation("softmax"))
 
-    model.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics=['accuracy'])
+    model.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics=['acc'])
     model.summary()
     return model
 
@@ -48,24 +56,20 @@ def rnn_network(epochs, batch_size, embedding_size, hidden_units, use_dropout):
     
     DATA_PATH = "./data.pkl"
     dataset = pickle.load(open(DATA_PATH, "rb"))
-    #x_train, y_train, x_test, y_test, max_len = load_data()
     x_train = dataset["x_train"]
     y_train = dataset["y_train"]
     x_test = dataset["x_test"]
     y_test = dataset["y_test_trans"]
     max_len = dataset["maxlen"]
     word_index = dataset["word_idx"]
-    #print(x_test)
 
     print ('\nData Loaded. Compiling...\n')
 
     model = model_init(max_len, embedding_size, hidden_units, use_dropout)
-    #metrics = Metrics('./best_model.h5')
     model.fit(
         x_train, y_train,
         batch_size=batch_size, epochs= epochs,
         validation_data=(x_test, y_test)
-        #validation_split=0.1
     )
 
     score, acc = model.evaluate(x_test, y_test, batch_size=batch_size)

@@ -139,7 +139,6 @@ def pretreat(train_path = './data/train_data.csv', test_path = './data/test_data
     if noise_num > 1:
         for i, line in enumerate(x_train):
             count += 1
-            #if y_train[i][-1] == 1:
             for _ in range(noise_num):
                 seq = []
                 seq.append(word_index["GO"])

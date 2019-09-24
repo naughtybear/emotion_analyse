@@ -1,3 +1,4 @@
+# 自己定義的f1 score class, 可以放在metrics中讓訓練時顯示
 from keras import backend as K
  
 def f1(y_true, y_pred):

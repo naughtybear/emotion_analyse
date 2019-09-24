@@ -54,8 +54,6 @@ def test(model_path = "emotion_model.h5"):
         idx = np.argmax(predict_result[0])
         predict_result = out_index[idx]
 
-        #print(idx)
-        #print(predict_result)
         predict_result = np.split(predict_result, [5,8])
         sen_type_pre = predict_result[0]
         sen_emotion_pre = predict_result[1]
@@ -64,32 +62,7 @@ def test(model_path = "emotion_model.h5"):
         sen_type_true = true_result[0]
         sen_emotion_true = true_result[1]
         sen_pos_true = true_result[2]
-        
-        # 0: true postive, 1: false positive. 2: false negative, 3: true negative
-        '''
-        print("\n", i)
-        print("認知偏誤類型:")
-        pos1, pos2 = find_two_max(sen_type_pre)
-        pos3, pos4 = find_two_max(sen_type_true)
-        print("\t預測：", lable_type[pos1], sen_type_pre[pos1], "\t真實:", lable_type[pos3], sen_type_true[pos3])
-        print("\t預測：", lable_type[pos2], sen_type_pre[pos2], "\t真實:", lable_type[pos4], sen_type_true[pos4])
-        print("\n情緒類型:")
-        pos1, pos2 = find_two_max(sen_emotion_pre)
-        pos3, pos4 = find_two_max(sen_emotion_true)
-        print("\t預測：", lable_emotion[pos1], sen_emotion_pre[pos1], "\t真實:", lable_emotion[pos3], sen_emotion_true[pos3])
-        print("\t預測：", lable_emotion[pos2], sen_emotion_pre[pos2], "\t真實:", lable_emotion[pos4], sen_emotion_true[pos4])
-        print("\n是否為治療性對話:")
-        if sen_pos_pre[0] > 0.5:
-            print("\t預測：是", sen_pos_pre[0])
-        else:
-            print("\t預測：否", sen_pos_pre[0])
-        if sen_pos_true[0] > 0.5:
-            print("\t真實：是", sen_pos_true[0])
-        else:
-            print("\t真實：否", sen_pos_true[0])
-        '''
 
-        #print(cognitive_bias)
         for i in range(len(sen_type_pre)):
             if sen_type_true[i] == 1 and sen_type_pre[i] > 0.5:
                 cognitive_bias[0] += 1
@@ -119,8 +92,33 @@ def test(model_path = "emotion_model.h5"):
                 conversation[2] += 1
             elif sen_pos_true[i] == 0 and sen_pos_pre[i] < 0.5: 
                 conversation[3] += 1
+
+        # 取消下方註解可以顯示測試資料詳細結果
+        '''
+        #0: true postive, 1: false positive. 2: false negative, 3: true negative
+        print("\n", i)
+        print("認知偏誤類型:")
+        pos1, pos2 = find_two_max(sen_type_pre)
+        pos3, pos4 = find_two_max(sen_type_true)
+        print("\t預測：", lable_type[pos1], sen_type_pre[pos1], "\t真實:", lable_type[pos3], sen_type_true[pos3])
+        print("\t預測：", lable_type[pos2], sen_type_pre[pos2], "\t真實:", lable_type[pos4], sen_type_true[pos4])
+        print("\n情緒類型:")
+        pos1, pos2 = find_two_max(sen_emotion_pre)
+        pos3, pos4 = find_two_max(sen_emotion_true)
+        print("\t預測：", lable_emotion[pos1], sen_emotion_pre[pos1], "\t真實:", lable_emotion[pos3], sen_emotion_true[pos3])
+        print("\t預測：", lable_emotion[pos2], sen_emotion_pre[pos2], "\t真實:", lable_emotion[pos4], sen_emotion_true[pos4])
+        print("\n是否為治療性對話:")
+        if sen_pos_pre[0] > 0.5:
+            print("\t預測：是", sen_pos_pre[0])
+        else:
+            print("\t預測：否", sen_pos_pre[0])
+        if sen_pos_true[0] > 0.5:
+            print("\t真實：是", sen_pos_true[0])
+        else:
+            print("\t真實：否", sen_pos_true[0])
+        '''
         
-    #print(cognitive_bias)
+    # 測試資料分項的accurancy, recall, precision, f1 score
     print("認知偏誤類型:")
     print(f"TP:{cognitive_bias[0]} FP:{cognitive_bias[1]} FN:{cognitive_bias[2]} TN:{cognitive_bias[3]}")
     print(f"acc:{(cognitive_bias[0]+cognitive_bias[3])/np.sum(cognitive_bias)} recall:{cognitive_bias[0]/(cognitive_bias[0]+cognitive_bias[2])} precision:{cognitive_bias[0]/(cognitive_bias[0]+cognitive_bias[1])} F1:{2*cognitive_bias[0]/(2*cognitive_bias[0]+cognitive_bias[1]+cognitive_bias[2])}")
@@ -131,6 +129,7 @@ def test(model_path = "emotion_model.h5"):
     print(f"TP:{conversation[0]} FP:{conversation[1]} FN:{conversation[2]} TN:{conversation[3]}")
     print(f"acc:{(conversation[0]+conversation[3])/np.sum(conversation)} recall:{conversation[0]/(conversation[0]+conversation[2])} precision:{conversation[0]/(conversation[0]+conversation[1])} F1:{2*conversation[0]/(2*conversation[0]+conversation[1]+conversation[2])}")
     
+    # 取消下方註解可以自己輸入測資測試
     '''
     count = 0
     while True:
