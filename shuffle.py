@@ -1,3 +1,4 @@
+# 將資料隨機分成test跟train data
 import csv
 import random
 

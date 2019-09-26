@@ -95,7 +95,7 @@ def test(model_path = "emotion_model.h5"):
 
         # 取消下方註解可以顯示測試資料詳細結果
         '''
-        #0: true postive, 1: false positive. 2: false negative, 3: true negative
+        # 0: true postive, 1: false positive. 2: false negative, 3: true negative
         print("\n", i)
         print("認知偏誤類型:")
         pos1, pos2 = find_two_max(sen_type_pre)
